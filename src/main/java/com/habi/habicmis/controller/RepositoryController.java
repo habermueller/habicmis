@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habi.habicmis.model.Repository;
 import com.habi.habicmis.repository.RepositoryRepository;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+//tag::hateoas-imports[]
+//end::hateoas-imports[]
+
+
 
 @RestController
 //@RequestMapping("/repository")
@@ -52,7 +60,7 @@ public class RepositoryController {
 	}
 	
 	@GetMapping("/repository/{name}")
-	ResponseEntity<Repository> getRepositoryByName(@PathVariable String name){
+	EntityModel<Repository> getRepositoryByName(@PathVariable String name){
 		log.info("Get Repository By Name Service Requested for repo " + name);
 				
 		Repository repo = repositoryRepository.findByName(name);		
@@ -60,8 +68,10 @@ public class RepositoryController {
 			throw new RepositoryNotFoundException(name);
 		}
 		
-		return new ResponseEntity<>(repo, HttpStatus.OK);				
-		
+		return EntityModel.of(repo,  //
+	
+				linkTo(methodOn(RepositoryController.class).getRepositoryByName(name)).withSelfRel(),
+				linkTo(methodOn(RepositoryController.class).getRepositories()).withRel("repository"));		
 	}
 	
 	@PutMapping("/repository/{name}")
