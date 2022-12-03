@@ -36,25 +36,27 @@ public class RepositoryController {
 
 	Logger log = LoggerFactory.getLogger(RepositoryController.class); 
 	
-	private RepositoryRepository repositoryRepository; 
+	private RepositoryRepository repositoryRepository;
+	private RepositoryModelAssembler repModelAssembler;
 	
-	public RepositoryController(RepositoryRepository repRepository) {
+	public RepositoryController(RepositoryRepository repRepository, RepositoryModelAssembler repModelAssembler) {
 		this.repositoryRepository = repRepository;
+		this.repModelAssembler= repModelAssembler;
 	}
 	
 	@PostMapping("/repository")
-	ResponseEntity<Repository> createRepository(@RequestBody Repository repo){
+	EntityModel<Repository> createRepository(@RequestBody Repository repo){
 		log.info("Start Creating a new Repository");
 		log.info(repo.toString());
 				
 		 
 		if (repositoryRepository.findByName(repo.getName()) != null) {
-			return new ResponseEntity<>(repo, HttpStatus.ALREADY_REPORTED);
+			throw new RepositoryExistsException(repo.getName());
 		}
 		
 		repositoryRepository.save(repo);
 						
-		return new ResponseEntity<>(repo, HttpStatus.CREATED);		
+		return repModelAssembler.toModel(repo);		
 	}
 	
 	@GetMapping("/repository")	
@@ -62,13 +64,8 @@ public class RepositoryController {
 		log.info("GetAllRepository Service Requested");
 
 		List<EntityModel<Repository>> repositories = repositoryRepository.findAll().stream()
-				.map(repository -> EntityModel.of(repository,
-													linkTo(methodOn(RepositoryController.class).getRepositoryByName(repository.getName())).withSelfRel(),
-													linkTo(methodOn(RepositoryController.class).getRepositories()).withRel("repositories")
-													)
-						)
-				.collect(Collectors.toList());
-					
+				.map(repModelAssembler::toModel)						
+				.collect(Collectors.toList());					
 		return CollectionModel.of(repositories, linkTo(methodOn(RepositoryController.class).getRepositories()).withSelfRel());		
 				
 	}
@@ -82,14 +79,11 @@ public class RepositoryController {
 			throw new RepositoryNotFoundException(name);
 		}
 		
-		return EntityModel.of(repo,  //
-	
-				linkTo(methodOn(RepositoryController.class).getRepositoryByName(name)).withSelfRel(),
-				linkTo(methodOn(RepositoryController.class).getRepositories()).withRel("repository"));		
+		return repModelAssembler.toModel(repo);
 	}
 	
 	@PutMapping("/repository/{name}")
-	ResponseEntity<Repository> putRepositorybyName(@RequestBody Repository newRepo,  @PathVariable String name){
+	EntityModel<Repository>  putRepositorybyName(@RequestBody Repository newRepo,  @PathVariable String name){
 		log.info("Put Repository By Name Service Requested for repo " + name);
 		
 		Repository repo = repositoryRepository.findByName(name);		
@@ -102,7 +96,7 @@ public class RepositoryController {
 				
 		repositoryRepository.save(repo);
 		
-		return new ResponseEntity<>(repo, HttpStatus.OK);
+		return repModelAssembler.toModel(repo);
 		
 		
 	}

@@ -5,7 +5,7 @@ public class RepositoryNotFoundException extends RuntimeException{
 	
 	public RepositoryNotFoundException(String repo) {
 		
-		super("Repository with name <" + repo + ">not found" );
+		super("Repository with name <" + repo + "> already exists" );
 	}
 	
 
