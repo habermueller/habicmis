@@ -1,9 +1,11 @@
 package com.habi.habicmis.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habi.habicmis.model.Repository;
 import com.habi.habicmis.repository.RepositoryRepository;
+
+
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -54,9 +58,19 @@ public class RepositoryController {
 	}
 	
 	@GetMapping("/repository")	
-	ResponseEntity<Iterable<Repository>> getRepositories(){
+	CollectionModel<EntityModel<Repository>> getRepositories(){
 		log.info("GetAllRepository Service Requested");
-		return new ResponseEntity<>(repositoryRepository.findAll(), HttpStatus.OK);
+
+		List<EntityModel<Repository>> repositories = repositoryRepository.findAll().stream()
+				.map(repository -> EntityModel.of(repository,
+													linkTo(methodOn(RepositoryController.class).getRepositoryByName(repository.getName())).withSelfRel(),
+													linkTo(methodOn(RepositoryController.class).getRepositories()).withRel("repositories")
+													)
+						)
+				.collect(Collectors.toList());
+					
+		return CollectionModel.of(repositories, linkTo(methodOn(RepositoryController.class).getRepositories()).withSelfRel());		
+				
 	}
 	
 	@GetMapping("/repository/{name}")
