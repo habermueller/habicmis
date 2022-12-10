@@ -62,5 +62,20 @@ public class StateMachine {
 		states.add(aState);
 	}
 	
+	public void addStateTransition(StateTransition stateTransition) throws StateisNotMemberOfMachineException {
+		
+		State fromState = stateTransition.getFromState();
+		State toState = stateTransition.getToState();
+		
+		// Make sure that from and to state is contained Machines State
+		if (! this.getStates().contains(fromState))
+			throw new StateisNotMemberOfMachineException(this, fromState );	
+		if (! this.getStates().contains(toState))
+			throw new StateisNotMemberOfMachineException(this, toState );	
+		
+		} 
+				
+	
+	
 	
 }
