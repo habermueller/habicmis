@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -13,13 +14,16 @@ public class StateTransition {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@ManyToOne	
+	@ManyToOne
+	@JoinColumn(name = "statemachine")
 	private StateMachine statemachine;
 		
-	@ManyToOne()	
+	@ManyToOne()
+	@JoinColumn(name = "fromstate")
 	private State fromState;
 
 	@ManyToOne()		
+	@JoinColumn(name = "tostate")
 	private State toState;
 
 	public Long getId() {

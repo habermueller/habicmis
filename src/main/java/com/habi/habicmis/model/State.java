@@ -1,17 +1,16 @@
 package com.habi.habicmis.model;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 
 @Entity
-
 public class State {
 
 	@Id
@@ -22,13 +21,27 @@ public class State {
 	
 	private String description;
 	
-	@ManyToOne(cascade = CascadeType.ALL)	
-	@JoinColumn
+	
+	@ManyToOne	
+	@JoinColumn(name = "statemachineid", insertable = false, updatable = false, nullable = false)
 	private StateMachine statemachine;
+	
+	private Long statemachineid;
 
-
+	
+	public State() {
+		
+	}
+	
+	
+	
 	public String getDescription() {
 		return description;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public void setDescription(String description) {
@@ -48,17 +61,25 @@ public class State {
 	}
 
 
+	@JsonBackReference
 	public StateMachine getStatemachine() {
 		return statemachine;
 	}
 
-	public void setStatemachine(StateMachine statemachine) {
-		this.statemachine = statemachine;
-	}
 	
 	public State (String name, String description) {
 		this.name = name;
 		this.description = description;
+	}
+
+
+	public Long getStatemachineid() {
+		return statemachineid;
+	}
+
+
+	public void setStatemachineid(Long statemachineid) {
+		this.statemachineid = statemachineid;
 	}
 	
 	

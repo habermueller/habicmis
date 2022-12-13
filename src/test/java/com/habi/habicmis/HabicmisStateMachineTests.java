@@ -2,6 +2,11 @@ package com.habi.habicmis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +30,9 @@ public class HabicmisStateMachineTests {
 	
 	@Autowired
 	StateRepository stateRepo;
+
+	
+	private final static Logger log = LoggerFactory.getLogger(HabicmisStateMachineTests.class);	
 	
 	@Test
 	void createStatemachineTest() {
@@ -35,8 +43,24 @@ public class HabicmisStateMachineTests {
 		
 		smRepo.save(sm);
 		
-		assertThat(sm.getId()).isGreaterThan(0);
+		log.trace("The Statemachine looks like this" + sm.toString());
+		
+		assertThat(sm.getId()).isNotNull();
 	}
+	
+	
+	@Test
+	void addStateToStatemachineTest() {
+
+		StateMachine sm = new StateMachine();
+		
+		sm.addState(new State("StartState", "This is the Start State of the Machine" ));		
+
+		smRepo.save(sm);
+		
+	}
+	
+	
 	
 	@Test
 	void createStatemachineAndSetStartStateTest() {
