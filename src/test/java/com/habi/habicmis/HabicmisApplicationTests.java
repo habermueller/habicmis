@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.habi.habicmis.controller.RepositoryController;
+import com.habi.habicmis.controller.CMISRepositoryController;
 
 @SpringBootTest
 class HabicmisApplicationTests {
 
 	@Autowired
-	private RepositoryController controller;
+	private CMISRepositoryController controller;
 	
 	@Test
 	void contextLoads() {

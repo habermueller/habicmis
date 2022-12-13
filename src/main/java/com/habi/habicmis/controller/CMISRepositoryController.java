@@ -27,14 +27,14 @@ import com.habi.habicmis.repository.RepositoryRepository;
 
 @RestController
 //@RequestMapping("/repository")
-public class RepositoryController {
+public class CMISRepositoryController {
 
-	Logger log = LoggerFactory.getLogger(RepositoryController.class); 
+	Logger log = LoggerFactory.getLogger(CMISRepositoryController.class); 
 	
 	private RepositoryRepository repositoryRepository;
 	private RepositoryModelAssembler repModelAssembler;
 	
-	public RepositoryController(RepositoryRepository repRepository, RepositoryModelAssembler repModelAssembler) {
+	public CMISRepositoryController(RepositoryRepository repRepository, RepositoryModelAssembler repModelAssembler) {
 		this.repositoryRepository = repRepository;
 		this.repModelAssembler= repModelAssembler;
 	}
@@ -61,7 +61,7 @@ public class RepositoryController {
 		List<EntityModel<Repository>> repositories = repositoryRepository.findAll().stream()
 				.map(repModelAssembler::toModel)						
 				.collect(Collectors.toList());					
-		return CollectionModel.of(repositories, linkTo(methodOn(RepositoryController.class).getRepositories()).withSelfRel());		
+		return CollectionModel.of(repositories, linkTo(methodOn(CMISRepositoryController.class).getRepositories()).withSelfRel());		
 				
 	}
 	

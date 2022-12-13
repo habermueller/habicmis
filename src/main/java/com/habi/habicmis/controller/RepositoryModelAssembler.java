@@ -15,8 +15,8 @@ public class RepositoryModelAssembler implements RepresentationModelAssembler<Re
 	public EntityModel<Repository> toModel(Repository repository) {
 		
 		return EntityModel.of(repository,
-								linkTo(methodOn(RepositoryController.class).getRepositoryByName(repository.getName())).withSelfRel(),
-								linkTo(methodOn(RepositoryController.class).getRepositories()).withRel("repository")
+								linkTo(methodOn(CMISRepositoryController.class).getRepositoryByName(repository.getName())).withSelfRel(),
+								linkTo(methodOn(CMISRepositoryController.class).getRepositories()).withRel("repository")
 								);
 		
 	}
